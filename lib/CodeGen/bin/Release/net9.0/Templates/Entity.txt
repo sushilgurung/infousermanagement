@@ -1,9 +1,0 @@
-﻿namespace Domain.Entities;
-
-[Table("{{Feature pascalName}}s")]
-public class {{Feature pascalName}}
-{
-    [Key]
-    public virtual int Id { get; set; }
-    public string Name { get; set; }
-}

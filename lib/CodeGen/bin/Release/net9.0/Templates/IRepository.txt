@@ -1,6 +1,0 @@
-﻿namespace Application.Interfaces.Repositories;
-
-public interface I{{Feature}}Repository : IRepository<{{Feature}}>
-{
-
-}

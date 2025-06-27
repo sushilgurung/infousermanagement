@@ -1,7 +1,0 @@
-﻿namespace Infrastructure.Persistence.Repositories;
-public class {{Feature}}Repository : Repository<{{Feature}}>, I{{Feature}}Repository
-{
-    public {{Feature}}Repository(ApplicationDbContext dbContext) : base(dbContext)
-    {
-    }
-}

@@ -1,6 +1,0 @@
-D:\Project\Inflo\InfoTechTest\UserManagement\src\BlazorClient\obj\Release\net9.0\UserManagement.Web.csproj.AssemblyReference.cache
-D:\Project\Inflo\InfoTechTest\UserManagement\src\BlazorClient\obj\Release\net9.0\UserManagement.Web.GeneratedMSBuildEditorConfig.editorconfig
-D:\Project\Inflo\InfoTechTest\UserManagement\src\BlazorClient\obj\Release\net9.0\UserManagement.Web.AssemblyInfoInputs.cache
-D:\Project\Inflo\InfoTechTest\UserManagement\src\BlazorClient\obj\Release\net9.0\UserManagement.Web.AssemblyInfo.cs
-D:\Project\Inflo\InfoTechTest\UserManagement\src\BlazorClient\obj\Release\net9.0\UserManagement.Web.csproj.CoreCompileInputs.cache
-D:\Project\Inflo\InfoTechTest\UserManagement\src\BlazorClient\obj\Release\net9.0\UserManagement.Web.MvcApplicationPartsAssemblyInfo.cache

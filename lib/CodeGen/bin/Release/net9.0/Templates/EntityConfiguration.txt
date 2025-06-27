@@ -1,9 +1,0 @@
-﻿namespace Infrastructure.Persistence.Configurations.AppicationDbConfigurations;
-
-public sealed class {{Feature pascalName}}Configuration : IEntityTypeConfiguration<{{Feature pascalName}}>, IApplicationDbConfigurations
-{
-    public void Configure(EntityTypeBuilder<{{Feature pascalName}}> builder)
-    {
-      
-    }
-}
