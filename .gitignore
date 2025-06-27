@@ -10,7 +10,6 @@
 /src/Domain/obj
 /src/Infrastructure/bin
 /src/Infrastructure/obj
-/src/WebAPI
 /tests/UserManagement.Data.Tests/bin
 /tests/UserManagement.Data.Tests/obj
 /tests/UserManagement.IntegrationTesting/obj
