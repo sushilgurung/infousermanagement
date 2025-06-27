@@ -44,7 +44,7 @@ deploy:
   runs-on: ubuntu-latest
   needs: build
 
-  steps:
+steps:
     - name: Download WebAPI artifact
       uses: actions/download-artifact@v4
     with:
