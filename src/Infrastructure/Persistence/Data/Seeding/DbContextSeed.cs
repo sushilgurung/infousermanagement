@@ -21,11 +21,11 @@ public class DbContextSeed
         var userManager = scopedProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scopedProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         var userManagementRepository = scopedProvider.GetRequiredService<IUserRepository>();
-        if (app.Environment.IsDevelopment())
-        {
+        //if (app.Environment.IsDevelopment())
+        //{
             await AddRoles(roleManager, app.Logger);
             await AddAdmin(userManager, app.Logger);
-        }
+       // }
         await SeedUserManagementAsync(userManagementRepository, applicationDbContext, app.Logger).ConfigureAwait(false);
     }
 

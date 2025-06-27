@@ -9,10 +9,12 @@ on:
 env:
   AZURE_WEBAPP_NAME: time-service
   DOTNET_VERSION: '9.0.x'
+  WEBAPI_OUTPUT: ./artifacts/webapi
+  BLAZOR_OUTPUT: ./artifacts/blazor
 
 jobs:
   build:
-    name: Build WebAPI
+    name: Build WebAPI & Blazor
     runs-on: ubuntu-latest
 
     steps:
@@ -25,19 +27,28 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore dependencies
-        run: dotnet restore src/WebAPI/WebAPI.csproj
+        run: dotnet restore
 
       - name: Build solution
-        run: dotnet build src/WebAPI/WebAPI.csproj --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
       - name: Publish WebAPI
-        run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ./artifacts/webapi
+        run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ${{ env.WEBAPI_OUTPUT }}
+      
+      - name: Publish Blazor WASM
+        run: dotnet publish src/BlazorClient/BlazorClient.csproj -c Release -o ${{ env.BLAZOR_OUTPUT }}
 
       - name: Upload WebAPI artifact
         uses: actions/upload-artifact@v4
         with:
           name: webapi-artifact
           path: ./artifacts/webapi
+
+      - name: Upload Blazor WASM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blazor-artifact
+          path: ${{ env.BLAZOR_OUTPUT }}/wwwroot
 
   deploy:
     name: Deploy to Azure
@@ -57,3 +68,17 @@ jobs:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./webapi
+
+      - name: Download Blazor WASM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: blazor-artifact
+          path: ./blazor
+      
+      - name: Deploy Blazor WASM to Azure Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          app_location: ./blazor
+          api_location: ""  # leave blank for Blazor WASM
+          output_location: "" # not needed when wwwroot is already published
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
