@@ -1,0 +1,7 @@
+﻿namespace Application.Features.{{Feature}}.Dtos;
+
+public class {{Feature}}Dto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}

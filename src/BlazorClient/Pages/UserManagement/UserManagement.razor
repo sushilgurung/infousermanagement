@@ -1,0 +1,283 @@
+﻿@page "/UserManagement"
+@attribute [Authorize]
+
+@using BlazorClient.Dto
+@using BlazorClient.Services.UserService
+@using Microsoft.AspNetCore.Authorization
+
+@inject NavigationManager Navigation
+
+@inject IUserService _UserService
+
+<h3>User Management</h3>
+@if (Users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <p class="fw-semibold">Showing: @(IsActive == null ? "All Users" : (IsActive == true ? "Active Only" : "Non Active"))</p>
+        <Dropdown Color="DropdownColor.Secondary">
+            <DropdownToggleButton>@(IsActive == null ? "All Users" : (IsActive == true ? "Active Users" : "Inactive Users"))</DropdownToggleButton>
+            <DropdownMenu>
+                <DropdownItem To="#" Type="DropdownItemType.Link" @onclick="() => FilterUsers(null)">All Users</DropdownItem>
+                <DropdownItem To="#" Type="DropdownItemType.Link" @onclick="() => FilterUsers(true)">Active Only</DropdownItem>
+                <DropdownItem To="#" Type="DropdownItemType.Link" @onclick="() => FilterUsers(false)">Non Active</DropdownItem>
+            </DropdownMenu>
+        </Dropdown>
+
+        <button class="btn btn-primary float-end" @onclick="AddUser">
+            Add User
+        </button>
+    </div>
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Forename</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                    <th>Account Active</th>
+                    <th>Date of Birth</th>
+                    <th style="width: 1px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Users)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.ForeName</td>
+                        <td>@item.SurName</td>
+                        <td>@item.Email</td>
+                        <td>@(item.IsActive ? "Yes" : "No")</td>
+                        <td>@item.DateOfBirth</td>
+                        <td>
+                            <Dropdown Color="DropdownColor.Secondary">
+                                <DropdownToggleButton>Action</DropdownToggleButton>
+                                <DropdownMenu>
+                                    <DropdownItem To="#" Type="DropdownItemType.Link" @onclick="() => ViewUser(item.Id)">View</DropdownItem>
+                                    <DropdownItem To="#" Type="DropdownItemType.Link" @onclick="() => EditUser(item.Id)">Edit</DropdownItem>
+                                    <DropdownItem To="#" Type="DropdownItemType.Link" @onclick="() => ShowConfirmationAsync(item.Id)">Delete</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-controls">
+        <!-- Page Size Dropdown -->
+        <label for="pageSize">Page Size: </label>
+        <select @bind="PageSize" @bind:after="OnPageSizeChanged" id="pageSize">
+            @foreach (var size in PageSizes)
+            {
+                <option value="@size">@size</option>
+            }
+        </select>
+
+        <!-- Previous Page Button -->
+        <button @onclick="PreviousPage" disabled="@IsPreviousDisabled">Previous</button>
+
+        <!-- Page Number Buttons -->
+        @foreach (var pageNumber in Enumerable.Range(1, TotalPages))
+        {
+            <button @onclick="() => GoToPage(pageNumber)" class="@(CurrentPage == pageNumber ? "active" : "")">
+                @pageNumber
+            </button>
+        }
+
+        <!-- Next Page Button -->
+        <button @onclick="NextPage" disabled="@IsNextDisabled">Next</button>
+    </div>
+
+
+
+
+
+}
+
+
+<ConfirmDialog @ref="dialog" />
+
+@code {
+    private Modal modal;
+    private ConfirmDialog dialog = default!;
+    [Inject] protected PreloadService PreloadService { get; set; }
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+
+    private async Task OnShowModalClick()
+    {
+        await modal?.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal?.HideAsync();
+    }
+
+
+    private List<UsersDto> Users;
+    [Parameter] public int DefaultPageSize { get; set; } = 10;
+
+    private int PageSize { get; set; } = 10;
+    private int CurrentPage { get; set; } = 1;
+    private readonly int[] PageSizes = new[] { 10, 50, 100, 500 };
+    private bool IsPreviousDisabled => CurrentPage == 1;
+    private bool IsNextDisabled => CurrentPage == TotalPages;
+    private int TotalPages { get; set; }
+
+
+    private bool? IsActive { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    /// <summary>
+    /// This method loads the users from the service.
+    /// </summary>
+    /// <returns></returns>
+    private async Task LoadUsers()
+    {
+        PreloadService.Show();
+        UserManagementRequestDto userManagementRequestDto = new UserManagementRequestDto
+        {
+            PageNumber = CurrentPage,
+            PageSize = PageSize,
+            IsActive = IsActive
+        };
+        var result = await _UserService.GetUsersAsync(userManagementRequestDto);
+        if (result.IsSuccess)
+        {
+            Users = result.Data.Items.ToList();
+            TotalPages = result.Data.Pagination.TotalPages;
+            CurrentPage = result.Data.Pagination.PageNumber;
+        }
+        else
+        {
+            // Handle error (e.g., show a message)
+            Users = new List<UsersDto>();
+        }
+        PreloadService.Hide();
+    }
+
+    /// <summary>
+    /// This method handles the pagination to the next page.
+    /// </summary>
+    /// <returns></returns>
+    private async Task NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+        }
+        await LoadUsers();
+    }
+    /// <summary>
+    /// This method handles the pagination to the previous page.
+    /// </summary>
+    /// <returns></returns>
+    private async Task PreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+        }
+        await LoadUsers();
+    }
+
+    private async Task GoToPage(int pageNumber)
+    {
+        CurrentPage = pageNumber;
+        await LoadUsers();
+    }
+
+    private async Task OnPageSizeChanged()
+    {
+        DefaultPageSize = PageSize;
+        await LoadUsers();
+    }
+
+
+    private void ViewUser(int id)
+    {
+        Navigation.NavigateTo($"/users/view/{id}");
+    }
+
+    private void EditUser(int id)
+    {
+        Navigation.NavigateTo($"/users/edit/{id}");
+    }
+
+    //// <summary>
+    /// This will delete a user by their ID.
+    /// </summary>
+    /// <param name="id"></param>
+    private async Task DeleteUser(int id)
+    {
+        ToastMessage toastMessage = new ToastMessage();
+        toastMessage.Type = ToastType.Danger;
+        toastMessage.Title = "Error";
+        toastMessage.HelpText = $"{DateTime.Now}";
+        var result = await _UserService.DeleteUserAsync(id);
+        toastMessage.Message = result.Message;
+
+        if (result.IsSuccess)
+        {
+            toastMessage.Type = ToastType.Success;
+            toastMessage.Title = "Success";
+            ToastService.Notify(toastMessage);
+            await LoadUsers();
+        }
+        else
+        {
+            ToastService.Notify(toastMessage);
+        }
+    }
+
+
+    //// <summary>
+    /// This method filters the users based on their active status.
+    /// </summary>
+    /// <param name="isActive"></param>
+    /// <returns></returns>
+    private async Task FilterUsers(bool? isActive)
+    {
+        IsActive = isActive;
+        CurrentPage = 1;
+        await LoadUsers();
+    }
+
+    /// <summary>
+    /// This method navigates to the user addition page.
+    /// </summary>
+    private void AddUser()
+    {
+        Navigation.NavigateTo("/users/add");
+    }
+
+    //// <summary>
+    /// Thismethod shows a confirmation dialog before performing an action, such as deleting a record.
+    /// </summary>
+    /// <returns></returns>
+    private async Task ShowConfirmationAsync(int id)
+    {
+        var confirmation = await dialog.ShowAsync(
+            title: "Are you sure you want to delete this?",
+            message1: "This will delete the record. Once deleted can not be rolled back.",
+            message2: "Do you want to proceed?");
+
+        if (confirmation)
+        {
+            await DeleteUser(id);
+        }
+    }
+}

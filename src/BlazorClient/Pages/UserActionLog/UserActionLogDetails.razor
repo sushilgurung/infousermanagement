@@ -1,0 +1,90 @@
+﻿@page "/useractionlogs/{Id:int}"
+@using BlazorClient.Dto
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IUserActionLogService UserActionLogService
+@using BlazorClient.Services.UserActionLog
+<h3>User Action Log Details</h3>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (log != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ID</dt>
+                <dd class="col-sm-9">@log.Id</dd>
+
+                <dt class="col-sm-3">User Name</dt>
+                <dd class="col-sm-9">@log.UserName</dd>
+
+                <dt class="col-sm-3">Action</dt>
+                <dd class="col-sm-9">@log.Action</dd>
+
+                <dt class="col-sm-3">Resource Type</dt>
+                <dd class="col-sm-9">@log.ResourceType</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@log.Description</dd>
+
+                <dt class="col-sm-3">IP Address</dt>
+                <dd class="col-sm-9">@log.IpAddress</dd>
+
+                <dt class="col-sm-3">Performed On</dt>
+                <dd class="col-sm-9">@log.PerformedOn.ToLocalTime().ToString("g")</dd>
+            </dl>
+        </div>
+    </div>
+}
+else
+{
+    <p>No data found.</p>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private UserActionLogDto? log;
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await UserActionLogService.GetUserActionLogByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                log = result.Data;
+            }
+            else
+            {
+                ToastMessage toastMessage = new ToastMessage();
+                toastMessage.Type = ToastType.Danger;
+                toastMessage.Title = "Error";
+                toastMessage.HelpText = $"{DateTime.Now}";
+                toastMessage.Message = result.Message;
+                ToastService.Notify(toastMessage);
+                Navigation.NavigateTo("/UserManagement");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

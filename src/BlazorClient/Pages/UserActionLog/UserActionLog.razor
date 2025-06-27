@@ -1,0 +1,249 @@
+﻿@page "/user-action-logs"
+@attribute [Authorize]
+
+@using BlazorClient.Dto
+@using BlazorClient.Services.UserActionLog
+@using BlazorClient.Services.UserService
+@using Microsoft.AspNetCore.Authorization
+@inject IUserActionLogService UserActionLogService
+@inject PreloadService PreloadService
+@inject ToastService ToastService
+
+
+@using System.Globalization
+
+<h3>User Action Logs</h3>
+
+@if (UserActionLogs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <DateRangePicker Culture="@CultureInfo.GetCultureInfo("en-US")"
+                         TimePicker="true"
+                         TimePicker24Hour="false"
+                         DateFormat="yyyy-MM-dd hh:mm tt"
+                         @bind-StartDate="StartDate"
+                         @bind-EndDate="EndDate"
+                         OnRangeSelect="OnDateRangeSelected">
+
+            <PickerTemplate>
+                <div id="@context.Id" @onclick="context.Toggle"
+                     style="background: #fff; cursor: pointer; padding: .45rem 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    <i class="oi oi-calendar"></i>&nbsp;
+                    <span>
+                        @if (context.TStartDate == null && context.TEndDate == null)
+                        {
+                            <span>Filter by date and time</span>
+                        }
+                        else if (context.TStartDate != null && context.TEndDate == null)
+                        {
+                            if (context.HoverDate > context.TStartDate)
+                            {
+                                @($"{context.TStartDate.Value.ToString("yyyy-MM-dd hh:mm tt")} - {context.HoverDate.Value.ToString("yyyy-MM-dd hh:mm tt")}")
+                                @($" - ({(context.HoverDate.Value.Subtract(context.TStartDate.Value).Days)} Days)")
+                            }
+                            else
+                            {
+                                <span>@context.TStartDate.Value.ToString("yyyy-MM-dd hh:mm tt")</span>
+                            }
+                        }
+                        else
+                        {
+                            <span>
+                                @context.FormattedRange
+                                @($" - ({(context.TEndDate.Value.Subtract(context.TStartDate.Value).Days)} nights)")
+                            </span>
+                        }
+                    </span>
+                    <i class="oi oi-chevron-bottom float-right"></i>
+                </div>
+            </PickerTemplate>
+
+        </DateRangePicker>
+
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Action</th>
+                    <th>Resource</th>
+                    <th>IP Address</th>
+                    <th>Performed On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in UserActionLogs)
+                {
+                    <tr>
+                        <td>@log.Id</td>
+                        <td>@log.UserName</td>
+                        <td>@log.Action</td>
+                        <td>@log.ResourceType</td>
+                        <td>@log.IpAddress</td>
+                        <td>@log.PerformedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => NavigateToDetails(log.Id))">
+                                <i class="oi oi-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-controls">
+        <label for="pageSize">Page Size: </label>
+        <select @bind="PageSize" @bind:after="OnPageSizeChanged" id="pageSize">
+            @foreach (var size in PageSizes)
+            {
+                <option value="@size">@size</option>
+            }
+        </select>
+
+        <button @onclick="PreviousPage" disabled="@IsPreviousDisabled">Previous</button>
+        @foreach (var pageNumber in Enumerable.Range(1, TotalPages))
+        {
+            <button @onclick="() => GoToPage(pageNumber)" class="@(CurrentPage == pageNumber ? "active" : "")">
+                @pageNumber
+            </button>
+        }
+        <button @onclick="NextPage" disabled="@IsNextDisabled">Next</button>
+    </div>
+}
+
+@code {
+    private List<UserActionLogDto> UserActionLogs;
+    private int PageSize { get; set; } = 10;
+    private int CurrentPage { get; set; } = 1;
+    private readonly int[] PageSizes = new[] { 10, 25, 50, 100 };
+    private int TotalPages { get; set; }
+
+    private bool IsPreviousDisabled => CurrentPage == 1;
+    private bool IsNextDisabled => CurrentPage == TotalPages;
+
+    private DateTimeOffset? StartDate { get; set; }
+    private DateTimeOffset? EndDate { get; set; }
+    private DateTimeOffset? FromDate;
+    private DateTimeOffset? ToDate;
+
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    /// <summary>
+    /// This method is called when the component is initialized.
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLogs();
+    }
+    /// <summary>
+    /// This method loads the user action logs based on the selected date range and pagination settings.
+    /// </summary>
+    /// <returns></returns>
+    private async Task LoadLogs()
+    {
+        PreloadService.Show();
+
+        var request = new GetUserActionQuery
+        {
+            StartDate = FromDate,
+            EndDate = ToDate,
+            PageNumber = CurrentPage,
+            PageSize = PageSize
+        };
+
+        var result = await UserActionLogService.GetUserActionLogsAsync(request);
+
+        if (result.IsSuccess)
+        {
+            UserActionLogs = result.Data.Items.ToList();
+            TotalPages = result.Data.Pagination.TotalPages;
+            CurrentPage = result.Data.Pagination.PageNumber;
+        }
+        else
+        {
+            ToastService.Notify(new ToastMessage
+            {
+                Type = ToastType.Danger,
+                Title = "Error",
+                Message = result.Message,
+                HelpText = DateTime.Now.ToString()
+            });
+            UserActionLogs = new List<UserActionLogDto>();
+        }
+
+        PreloadService.Hide();
+    }
+    /// <summary>
+    /// This method is triggered when the page size is changed in the pagination controls.
+    /// </summary>
+    /// <returns></returns>
+    private async Task OnPageSizeChanged()
+    {
+        CurrentPage = 1;
+        await LoadLogs();
+    }
+    /// <summary>
+    /// This method is triggered when the "Previous" button is clicked in the pagination controls.
+    /// </summary>
+    /// <returns></returns>
+    private async Task PreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+            await LoadLogs();
+        }
+    }
+    /// <summary>
+    /// This method is triggered when the "Next" button is clicked in the pagination controls.
+    /// </summary>
+    /// <returns></returns>
+    private async Task NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+            await LoadLogs();
+        }
+    }
+    /// <summary>
+    /// This method is triggered when a specific page number is clicked in the pagination controls.
+    /// </summary>
+    /// <param name="pageNumber"></param>
+    /// <returns></returns>
+    private async Task GoToPage(int pageNumber)
+    {
+        CurrentPage = pageNumber;
+        await LoadLogs();
+    }
+    /// <summary>
+    /// This method is triggered when a date range is selected in the DateRangePicker component.
+    /// </summary>
+    /// <param name="range"></param>
+    /// <returns></returns>
+    private async Task OnDateRangeSelected(DateRange range)
+    {
+        FromDate = range.Start;
+        ToDate = range.End;
+
+        await LoadLogs();
+    }
+    /// <summary>
+    /// This method navigates to the details page of a specific user action log.
+    /// </summary>
+    /// <param name="id"></param>
+    private void NavigateToDetails(int id)
+    {
+        NavigationManager.NavigateTo($"/useractionlogs/{id}");
+    }
+}

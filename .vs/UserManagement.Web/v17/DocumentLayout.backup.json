@@ -1,0 +1,109 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|d:\\project\\inflo\\infotechtest\\usermanagement\\lib\\codegen\\templates\\dto.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|solutionrelative:lib\\codegen\\templates\\dto.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|d:\\project\\inflo\\infotechtest\\usermanagement\\lib\\codegen\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|solutionrelative:lib\\codegen\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|d:\\project\\inflo\\infotechtest\\usermanagement\\lib\\codegen\\dtos\\featureoption.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|solutionrelative:lib\\codegen\\dtos\\featureoption.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|d:\\project\\inflo\\infotechtest\\usermanagement\\lib\\codegen\\services\\interfaceservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1A9F020B-0AFB-4855-B7ED-46C6C19F1B80}|lib\\CodeGen\\CodeGen.csproj|solutionrelative:lib\\codegen\\services\\interfaceservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dto.txt",
+              "DocumentMoniker": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Templates\\Dto.txt",
+              "RelativeDocumentMoniker": "lib\\CodeGen\\Templates\\Dto.txt",
+              "ToolTip": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Templates\\Dto.txt",
+              "RelativeToolTip": "lib\\CodeGen\\Templates\\Dto.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-06-23T23:43:18.704Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FeatureOption.cs",
+              "DocumentMoniker": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Dtos\\FeatureOption.cs",
+              "RelativeDocumentMoniker": "lib\\CodeGen\\Dtos\\FeatureOption.cs",
+              "ToolTip": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Dtos\\FeatureOption.cs",
+              "RelativeToolTip": "lib\\CodeGen\\Dtos\\FeatureOption.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T23:34:21.822Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Program.cs",
+              "RelativeDocumentMoniker": "lib\\CodeGen\\Program.cs",
+              "ToolTip": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Program.cs",
+              "RelativeToolTip": "lib\\CodeGen\\Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T23:34:00.778Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "a778786b-1fa9-434c-823a-cafece35afd0",
+        "Display": 0,
+        "X": -5,
+        "Y": 67,
+        "Width": 1496,
+        "Height": 956,
+        "WindowState": 2
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "InterfaceServices.cs",
+              "DocumentMoniker": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Services\\InterfaceServices.cs",
+              "RelativeDocumentMoniker": "lib\\CodeGen\\Services\\InterfaceServices.cs",
+              "ToolTip": "D:\\Project\\Inflo\\InfoTechTest\\UserManagement\\lib\\CodeGen\\Services\\InterfaceServices.cs",
+              "RelativeToolTip": "lib\\CodeGen\\Services\\InterfaceServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-23T23:33:00.073Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

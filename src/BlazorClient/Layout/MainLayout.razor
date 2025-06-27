@@ -1,0 +1,41 @@
+﻿@inherits LayoutComponentBase
+@using BlazorClient.Services.AuthService
+@inject NavigationManager Navigation
+@inject IAuthService AuthService
+@using BlazorBootstrap
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    <p>Hello, @context.User.Identity?.Name!</p>
+                    <p><button class="btn btn-primary" @onclick="() => HandleLogout()">Log out</button></p>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="btn btn-primary" href="login">Login</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
+
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<Preload LoadingText="Loading..." />
+<Toasts class="p-3" AutoHide="true" Delay="6000" Placement="ToastsPlacement.TopRight" />
+
+@code {
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/login");
+    }
+}

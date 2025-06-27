@@ -1,0 +1,33 @@
+﻿namespace Application.Features.{{FolderName}}.Command.{{Feature}};
+
+
+public class {{Feature}}Command : IRequest<IResult>
+{
+   
+}
+
+public class {{Feature}}CommandHandler : IRequestHandler<{{Feature}}Command, IResult>
+{
+    private readonly ILogger<{{Feature}}CommandHandler> _logger;
+    public {{Feature}}CommandHandler(
+        ILogger<{{Feature}}CommandHandler> logger
+        )
+    {
+        this._logger = logger;
+    }
+
+    public async Task<IResult> Handle({{Feature}}Command request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Starting {FunctionName} with request: {@RequestData}",
+         nameof({{Feature}}CommandHandler), request);
+        try
+        {
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{FunctionName} trigger function received a request for {@RequestData}", nameof({{Feature}}CommandHandler), request);
+            return Results.Problem("Failed. Please try again later.", statusCode: 500);
+        }
+    }
+}

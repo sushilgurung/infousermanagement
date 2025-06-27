@@ -1,0 +1,10 @@
+﻿namespace Application.Features.{{FolderName}}.Command.{{Feature}};
+
+public class {{Feature}}CommandValidator : AbstractValidator<{{Feature}}Command>
+{
+    public {{Feature}}CommandValidator()
+    {
+   
+
+    }
+}

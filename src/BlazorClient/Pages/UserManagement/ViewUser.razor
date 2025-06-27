@@ -1,0 +1,64 @@
+﻿@page "/users/view/{UserId:int}"
+@using BlazorClient.Dto
+@using BlazorClient.Services.UserService
+@inject IUserService UserService
+@inject NavigationManager Navigation
+
+
+<h3>View User</h3>
+
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@user.ForeName @user.SurName</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@user.Email</dd>
+
+                <dt class="col-sm-3">Date of Birth</dt>
+                <dd class="col-sm-9">@user.DateOfBirth.ToShortDateString()</dd>
+
+                <dt class="col-sm-3">Account Active</dt>
+                <dd class="col-sm-9">@(user.IsActive ? "Yes" : "No")</dd>
+            </dl>
+            <button class="btn btn-secondary" @onclick="BackToList">Back to List</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Inject] protected PreloadService PreloadService { get; set; }
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    [Parameter] public int UserId { get; set; }
+
+    private UsersDto? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await UserService.GetUserByIdAsync(UserId);
+        if (result.IsSuccess)
+        {
+            user = result.Data;
+        }
+        else
+        {
+            ToastMessage toastMessage = new ToastMessage();
+            toastMessage.Type = ToastType.Danger;
+            toastMessage.Title = "Error";
+            toastMessage.HelpText = $"{DateTime.Now}";
+            toastMessage.Message = result.Message;
+            ToastService.Notify(toastMessage);
+            Navigation.NavigateTo("/UserManagement");
+        }
+    }
+
+    private void BackToList()
+    {
+        Navigation.NavigateTo("/UserManagement");
+    }
+}
