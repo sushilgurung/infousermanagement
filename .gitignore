@@ -1,0 +1,17 @@
+/.vs
+/lib/CodeGen/obj
+/lib/CodeGen/bin
+/obj
+/src/Application/bin
+/src/Application/obj
+/src/BlazorClient/bin
+/src/BlazorClient/obj
+/src/Domain/bin
+/src/Domain/obj
+/src/Infrastructure/bin
+/src/Infrastructure/obj
+/src/WebAPI
+/tests/UserManagement.Data.Tests/bin
+/tests/UserManagement.Data.Tests/obj
+/tests/UserManagement.IntegrationTesting/obj
+/tests/UserManagement.IntegrationTesting/bin
