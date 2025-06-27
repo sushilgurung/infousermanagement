@@ -32,14 +32,15 @@ try
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
-        app.MapOpenApi();
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/openapi/v1.json", "User Management API v1");
-            c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-        });
+
     }
+    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/openapi/v1.json", "User Management API v1");
+        c.RoutePrefix = string.Empty;
+    });
 
     app.UseHttpsRedirection();
     //Use CORS policy AFTER HTTPS redirection
