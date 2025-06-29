@@ -7,7 +7,6 @@ on:
       - main
 
 env:
-  AZURE_WEBAPP_NAME: time-service
   DOTNET_VERSION: '9.0.x'
   WEBAPI_OUTPUT: ./artifacts/webapi
   BLAZOR_OUTPUT: ./artifacts/blazor
@@ -39,7 +38,7 @@ jobs:
         run: dotnet build src/BlazorClient/BlazorClient.csproj --configuration Release --no-restore
 
       - name: Publish WebAPI
-        run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ./publish/blazor
+        run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ${{ env.WEBAPI_OUTPUT }}
       
       - name: Publish Blazor WASM
         run: dotnet publish src/BlazorClient/BlazorClient.csproj -c Release -o ${{ env.BLAZOR_OUTPUT }}
@@ -48,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: webapi-artifact
-          path: ./artifacts/webapi
+          path: ${{ env.WEBAPI_OUTPUT }}
 
       - name: Upload Blazor WASM artifact
         uses: actions/upload-artifact@v4
