@@ -27,7 +27,7 @@ namespace UserManagement.IntegrationTesting.Controllers
             var loginRequest = new
             {
                 UserName = "testuser@example.com",
-                Password = "YourTestPassword123!"
+                Password = "strongPassword@123!"
             };
 
             // Act
@@ -35,7 +35,6 @@ namespace UserManagement.IntegrationTesting.Controllers
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            // var json = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
             var loginResponse = await response.Content.ReadFromJsonAsync<Result<LoginCommandDto>>();
 
             loginResponse.Should().NotBeNull();
@@ -50,8 +49,8 @@ namespace UserManagement.IntegrationTesting.Controllers
             // Arrange
             var loginRequest = new
             {
-                UserName = "fakeuser@example.com",
-                Password = "WrongPassword!"
+                UserName = "user@yopmail.com",
+                Password = "abcdefghijklmnop!"
             };
 
             // Act
@@ -62,7 +61,6 @@ namespace UserManagement.IntegrationTesting.Controllers
             var loginResponse = await response.Content.ReadFromJsonAsync<Result<LoginCommandDto>>();
             loginResponse.IsSuccess.Should().BeFalse();
             loginResponse.Data.Should().BeNull();
-            loginResponse.Data.Token.Should().BeNullOrEmpty();
         }
     }
 }

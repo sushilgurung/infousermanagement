@@ -1,41 +1,37 @@
 
-using Application.Common.Behaviours;
-using Application.Exceptions;
-using Carter;
-using FluentValidation;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Application.Interfaces.QueueServices;
+using Infrastructure.Persistence.QueueServices;
 
 namespace Infrastructure.Persistence.ServiceRegister
 {
     /// <summary>
-    /// 
+    /// This class is responsible for registering persistence-related services in the ASP.NET Core dependency injection container.
     /// </summary>
-    //public class ServiceRegistration : IServicesRegistrationWithConfig
-    //{
-    //    public void AddServices(IServiceCollection services, IConfiguration configuration)
-    //    {
-    //        services.AddScoped<ITokenService, TokenService>();
-    //        services.AddScoped<ICurrentUserService, CurrentUserService>();
-    //        services.AddScoped<IUserActionLogService, UserActionLogService>();
-    //    }
-    //}
-
-    public class ServiceRegistration
+    public static class ServiceRegistration
     {
-        public static void AddServices(IServiceCollection services, IConfiguration configuration)
+        public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            RepositoriesRegistration.AddServices(services);
-            DatabaseRegistration.AddServices(services, configuration);
             IdentityRegistration.AddServices(services, configuration);
+            DatabaseRegistration.AddServices(services, configuration);
+            RepositoriesRegistration.AddServices(services);
+            services.AddServices(configuration);
+        }
+
+        /// <summary>
+        /// This method registers services.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
+        {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IUserActionLogService, UserActionLogService>();
+            services.AddScoped<IIdentityOptionsAccessorService, IdentityOptionsAccessorService>();
+
+            services.AddScoped<IQueueService, QueueService>();
+            services.AddTransient<IUserActionLogQueuePublisher, UserActionLogQueuePublisher>();
+            services.AddSingleton<IUserActionLogQueueConsumer, UserActionLogQueueConsumer>();
         }
 
 

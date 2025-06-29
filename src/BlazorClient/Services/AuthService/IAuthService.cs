@@ -3,10 +3,11 @@ using BlazorClient.Dto;
 
 namespace BlazorClient.Services.AuthService
 {
-    interface IAuthService
+    public interface IAuthService
     {
         Task<Result<UserDetailsDto>> LoginAsync(string username, string password);
         Task LogoutAsync();
         Task NotifyUserAuthenticationAsync();
+        Task<Result<TokenResponseDto>> TryRefreshTokenAsync();
     }
 }

@@ -1,3 +1,5 @@
+using Application.Dto;
+using Application.Interfaces.QueueServices;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Common;
@@ -15,16 +17,16 @@ public class CreateUserManagementCommandHandler : IRequestHandler<CreateUserComm
 {
     private readonly ILogger<CreateUserManagementCommandHandler> _logger;
     private readonly IUserRepository _userRepository;
-    private readonly IUserActionLogService _userActionLogService;
+    private readonly IUserActionLogQueuePublisher _userActionLogQueuePublisher;
     public CreateUserManagementCommandHandler(
         ILogger<CreateUserManagementCommandHandler> logger,
         IUserRepository userRepository,
-        IUserActionLogService userActionLogService
+        IUserActionLogQueuePublisher userActionLogQueuePublisher
         )
     {
         _logger = logger;
         _userRepository = userRepository;
-        _userActionLogService = userActionLogService;
+        _userActionLogQueuePublisher = userActionLogQueuePublisher;
     }
 
     public async Task<IResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -47,10 +49,11 @@ public class CreateUserManagementCommandHandler : IRequestHandler<CreateUserComm
             _logger.LogInformation("User created successfully with ID: {UserId}", user.Id);
             var result = Result.Success("User created successfully.");
 
-            await _userActionLogService.LogUserActionAsync(UserActionTypeEnum.Created,
-                ResourceTypeEnum.User,
-                $"User created with ID: {user.Id}, Email: {user.Email}, Name: {user.ForeName} {user.SurName}")
-                .ConfigureAwait(false);
+            await _userActionLogQueuePublisher.PublishAsync(
+                action: UserActionTypeEnum.Created,
+                resourceType: ResourceTypeEnum.User,
+                description: $"User created with ID: {user.Id}, Email: {user.Email}, Name: {user.ForeName} {user.SurName}"
+            ).ConfigureAwait(false);
 
             return Results.Ok(result);
         }

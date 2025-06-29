@@ -62,16 +62,6 @@ namespace UserManagement.IntegrationTesting.Fixtures
             try
             {
                 await _mssqlContainer.StartAsync();
-
-                //var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
-                //var connStr = $"Server=localhost,{port};Database={DatabaseName};User Id={Username};Password={Password};TrustServerCertificate=true;";
-
-                //DbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-                //    .UseSqlServer(connStr)
-                //    .Options;
-
-                //using var dbContext = new ApplicationDbContext(DbContextOptions, CurrentUserServiceMock.Object);
-                //await dbContext.Database.EnsureCreatedAsync();
             }
             catch (Exception ex)
             {
@@ -96,8 +86,6 @@ namespace UserManagement.IntegrationTesting.Fixtures
                 {
                     services.Remove(descriptor);
                 }
-                //services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
-                //services.RemoveAll(typeof(ApplicationDbContext));
               
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(ConnectionString));
@@ -121,10 +109,6 @@ namespace UserManagement.IntegrationTesting.Fixtures
                 //services.AddAuthentication("Test")
                 //   .AddScheme<AuthenticationSchemeOptions, FakeJwtAuthHandler>("Test", options => { });
 
-                //services.AddAuthorization(options =>
-                //{
-                //    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-                //});
                 builder.Configure(app =>
                 {
                     app.UseAuthentication();

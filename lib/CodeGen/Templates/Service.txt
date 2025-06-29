@@ -6,7 +6,7 @@ namespace Infrastructure.Persistence.Services;
         private readonly ILogger<{{Feature}}Service> _logger;
         public {{Feature}}Service(ILogger<{{Feature}}Service> logger)
         {
-            ._logger = logger;
+            _logger = logger;
         }
     }
 

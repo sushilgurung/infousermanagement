@@ -15,26 +15,26 @@
 
     <div class="mb-3">
         <label>First Name</label>
-        <InputText class="form-control" @bind-Value="user.ForeName" />
+        <InputText class="form-control" id="foreName" @bind-Value="user.ForeName" />
         <ValidationMessage For="@(() => user.ForeName)" />
     </div>
     <div class="mb-3">
         <label>Last Name</label>
-        <InputText class="form-control" @bind-Value="user.SurName" />
+        <InputText class="form-control" id="sureName" @bind-Value="user.SurName" />
         <ValidationMessage For="@(() => user.SurName)" />
     </div>
     <div class="mb-3">
         <label>Email</label>
-        <InputText class="form-control" @bind-Value="user.Email" />
+        <InputText class="form-control" id="email" @bind-Value="user.Email" />
         <ValidationMessage For="@(() => user.Email)" />
     </div>
     <div class="mb-3">
         <label>Date of Birth</label>
-        <InputDate class="form-control" @bind-Value="user.DateOfBirth" />
+        <InputDate class="form-control" id="dateOfBirth" @bind-Value="user.DateOfBirth" />
         <ValidationMessage For="@(() => user.DateOfBirth)" />
     </div>
     <div class="form-check mb-3">
-        <InputCheckbox class="form-check-input" @bind-Value="user.IsActive" @attributes="dateAttributes" />
+        <InputCheckbox class="form-check-input" id="isActive" @bind-Value="user.IsActive" @attributes="dateAttributes" />
         <label class="form-check-label">Is Active</label>
     </div>
 

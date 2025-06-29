@@ -1,19 +1,6 @@
 ﻿version: "3.8"
 
 services:
-  webapi:
-    image: ${DOCKER_REGISTRY-}webapi
-    build:
-      context: .
-      dockerfile: src/WebAPI/Dockerfile
-    ports:
-      - "5000:8080"  #maps host 5000 → container 8080
-    environment:
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=UserManagement;User=sa;Password=P@ssword@123;
-    depends_on:
-      - sqlserver
-  
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -27,16 +14,6 @@ services:
     volumes:
       - sqlserverdata:/var/opt/mssql
 
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    ports:
-      - "8081:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - webapi
-  
   adminer:
    image: adminer
    container_name: adminer
@@ -44,6 +21,33 @@ services:
     - "8082:8080"
    depends_on:
     - sqlserver
+
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: src/WebAPI/Dockerfile
+    ports:
+      - "5000:8080" 
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=UserManagement;User=sa;Password=P@ssword@123;TrustServerCertificate=True;    
+    depends_on:
+      - sqlserver
+
+  webapp:
+    image: ${DOCKER_REGISTRY-}webapp
+    container_name: webapp
+    build:
+      context: .
+      dockerfile: src/BlazorClient/Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - webapi
  
 volumes:
   sqlserverdata:

@@ -1,11 +1,12 @@
 
+using System.Text.Json;
 using Application.Features.User.Queries.GetUser;
+using Application.Interfaces.QueueServices;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Common;
 using Domain.Enum;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace Application.Features.User.Query.GetUserById;
 
@@ -18,16 +19,17 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, IResult
 {
     private readonly ILogger<GetUserManagementQueryHandler> _logger;
     private readonly IUserRepository _userRepository;
-    private readonly IUserActionLogService _userActionLogService;
+
+    private readonly IUserActionLogQueuePublisher _userActionLogQueuePublisher;
     public GetUserByIdQueryHandler(
         ILogger<GetUserManagementQueryHandler> logger,
         IUserRepository userRepository,
-        IUserActionLogService userActionLogService
+        IUserActionLogQueuePublisher userActionLogQueuePublisher
         )
     {
         _logger = logger;
         _userRepository = userRepository;
-        _userActionLogService = userActionLogService;
+        _userActionLogQueuePublisher = userActionLogQueuePublisher;
     }
     public async Task<IResult> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
@@ -50,11 +52,11 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, IResult
                 return Results.Json(Result.Failure($"User with ID {request.UserId} not found."), statusCode: StatusCodes.Status404NotFound);
             }
 
-            await _userActionLogService.LogUserActionAsync(
-              action: UserActionTypeEnum.Viewed,
-              resourceType: ResourceTypeEnum.User,
-              description: $"Viewed user: {JsonSerializer.Serialize(user)}"
-          ).ConfigureAwait(false);
+            await _userActionLogQueuePublisher.PublishAsync(
+                    action: UserActionTypeEnum.Viewed,
+                    resourceType: ResourceTypeEnum.User,
+                    description: $"Viewed user: {JsonSerializer.Serialize(user)}"
+                    ).ConfigureAwait(false);
 
             return Results.Ok(Result<GetUserDto>.Success(user, "User found successfully."));
         }

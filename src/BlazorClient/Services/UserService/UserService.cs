@@ -154,30 +154,6 @@ namespace BlazorClient.Services.UserService
                     PropertyNameCaseInsensitive = true
                 });
                 return result;
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    return Result.Success("User deleted successfully.");
-                //}
-                //else
-                //{
-
-                //    switch (response.StatusCode)
-                //    {
-                //        case HttpStatusCode.NotFound:
-                //            _logger.LogWarning("User with ID {UserId} not found.", id);
-                //            return Result.Failure("User not found.");
-
-                //        case HttpStatusCode.InternalServerError:
-                //            _logger.LogError("Server error occurred while deleting user with ID {UserId}.", id);
-                //            return Result.Failure("A server error occurred while trying to delete the user.");
-
-                //        default:
-                //            var reason = await response.Content.ReadAsStringAsync();
-                //            _logger.LogWarning("Unexpected error ({StatusCode}): {Reason}", response.StatusCode, reason);
-                //            return Result.Failure($"Unexpected error: {(int)response.StatusCode} - {response.ReasonPhrase}");
-                //    }
-                //    return Result.Failure("Failed to delete user.");
-                //}
             }
             catch (HttpRequestException ex)
             {

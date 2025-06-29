@@ -1,12 +1,8 @@
-﻿using Application.Features.Authentication.Command.Login;
+﻿using Application.Features.Authentication.Command.GenerateRefreshToken;
+using Application.Features.Authentication.Command.Login;
 using Carter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Authentication.Module
 {
@@ -26,6 +22,11 @@ namespace Application.Features.Authentication.Module
             {
                 return await mediator.Send(command);
             });
+
+            app.MapPost("refresh-token", async (IMediator mediator, GenerateRefreshToken command) =>
+            {
+                return await mediator.Send(command);
+            }).RequireAuthorization();
         }
     }
 }

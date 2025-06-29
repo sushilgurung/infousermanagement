@@ -1,12 +1,8 @@
 
-using Application.Features.User.Command.UpdateUser;
+
 using Application.Features.User.Queries.GetUser;
 using Application.Features.UserActionLog.Queries.UserActionLog;
-using Azure.Core;
 using Domain.Common;
-using Domain.Enum;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Persistence.Services;
@@ -37,20 +33,10 @@ public class UserActionLogService : IUserActionLogService
     /// <param name="userActionLog"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public async Task LogUserActionAsync(UserActionTypeEnum action, ResourceTypeEnum resourceType, string description)
+    public async Task LogUserActionAsync(UserActionLog userActionLog)
     {
         try
         {
-            UserActionLog userActionLog = new UserActionLog
-            {
-                UserId = _currentUserService.UserId,
-                Action = action,
-                ResourceType = resourceType,
-                Description = description,
-                PerformedOn = DateTime.UtcNow,
-                IpAddress = _currentUserService.UserPublicIpAddress
-            };
-
             await _userActionLogRepository.AddAsync(userActionLog);
             await _userActionLogRepository.SaveChangesAsync();
             _logger.LogInformation("User action log saved successfully for user {UserId} with action {Action} at {PerformedOn}.",
@@ -58,7 +44,7 @@ public class UserActionLogService : IUserActionLogService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while logging user action for user {UserId} with action {Action}.", _currentUserService.UserId, action);
+            _logger.LogError(ex, "Error occurred while logging user action for user {UserId} with action {Action}.", _currentUserService.UserId, userActionLog.Action);
         }
     }
 

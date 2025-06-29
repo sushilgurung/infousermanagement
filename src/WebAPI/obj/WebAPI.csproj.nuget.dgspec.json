@@ -153,6 +153,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Azure.Messaging.ServiceBus": {
+              "target": "Package",
+              "version": "[7.18.2, )"
+            },
             "Bogus": {
               "target": "Package",
               "version": "[35.6.3, )"

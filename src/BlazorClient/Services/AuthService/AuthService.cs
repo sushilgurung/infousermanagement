@@ -2,12 +2,9 @@
 using BlazorClient.Dto;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -144,6 +141,36 @@ public class AuthService : AuthenticationStateProvider, IAuthService
         catch (Exception ex)
         {
             _logger.LogError(ex, "{FunctionName} trigger function received a request for {@RequestData}", nameof(LogoutAsync), new { });
+        }
+    }
+
+    /// <summary>
+    /// This method is used to refresh the authentication token by sending a POST request to the refresh endpoint.
+    /// </summary>
+    /// <returns></returns>
+    public async Task<Result<TokenResponseDto>> TryRefreshTokenAsync()
+    {
+        try
+        {
+            var userDetails = await _localStorage.GetItemAsync<UserDetailsDto>("userDetails");
+            var response = await _httpClient.PostAsJsonAsync("auth/refresh", new { AccessToken = userDetails.Token, RefreshToken = userDetails.RefreshToken });
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResult = await response.Content.ReadFromJsonAsync<Result<TokenResponseDto>>();
+                if (tokenResult.IsSuccess)
+                {
+                    userDetails.RefreshToken = tokenResult.Data.RefreshToken;
+                    userDetails.Token = tokenResult.Data.Token;
+                    await _localStorage.SetItemAsync("userDetails", userDetails);
+                }
+                return tokenResult;
+            }
+            return Result.Failure<TokenResponseDto>("Something went wrong!!!");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<TokenResponseDto>("something went wrong!!!");
+            throw;
         }
     }
 }

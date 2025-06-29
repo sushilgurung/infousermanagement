@@ -114,6 +114,30 @@ namespace Infrastructure.Persistence.Data.Migrations.ApplicationDbContextData
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -293,6 +317,16 @@ namespace Infrastructure.Persistence.Data.Migrations.ApplicationDbContextData
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.UserActionLog", b =>
                 {
                     b.HasOne("Domain.Entities.ApplicationUser", "ApplicationUser")
@@ -356,6 +390,8 @@ namespace Infrastructure.Persistence.Data.Migrations.ApplicationDbContextData
 
             modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("UserActionLogs");
                 });
 #pragma warning restore 612, 618

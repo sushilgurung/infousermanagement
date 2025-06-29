@@ -20,7 +20,7 @@ namespace UserManagement.IntegrationTesting.Data
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
             var testEmail = "testuser@example.com";
-            var testPassword = "YourTestPassword@123!";
+            var testPassword = "strongPassword@123!";
 
             if (!await userManager.Users.AnyAsync(u => u.Email == testEmail))
             {

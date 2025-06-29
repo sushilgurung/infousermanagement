@@ -1,9 +1,10 @@
+using System.Text;
 using Application.Features.User.Commands.CreateUser;
+using Application.Interfaces.QueueServices;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Common;
 using Domain.Enum;
-using System.Text;
 
 namespace Application.Features.User.Command.UpdateUser;
 
@@ -23,16 +24,18 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, IResu
     private readonly ILogger<UpdateUserCommandHandler> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IUserActionLogService _userActionLogService;
-
+    private readonly IUserActionLogQueuePublisher _userActionLogQueuePublisher;
     public UpdateUserCommandHandler(
         ILogger<UpdateUserCommandHandler> logger,
         IUserRepository userRepository,
-        IUserActionLogService userActionLogService
+        IUserActionLogService userActionLogService,
+         IUserActionLogQueuePublisher userActionLogQueuePublisher
         )
     {
         _logger = logger;
         _userRepository = userRepository;
         _userActionLogService = userActionLogService;
+        _userActionLogQueuePublisher = userActionLogQueuePublisher;
     }
 
     public async Task<IResult> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -76,11 +79,17 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, IResu
             if (oldIsActive != user.IsActive)
                 changesDescription.AppendLine($"IsActive: '{oldIsActive}' => '{user.IsActive}'");
 
-            await _userActionLogService.LogUserActionAsync(
-               UserActionTypeEnum.Updated,
+            // await _userActionLogService.LogUserActionAsync(
+            //    UserActionTypeEnum.Updated,
+            //    ResourceTypeEnum.User,
+            //    $"User updated with ID: {user.Id}, Email: {user.Email}"
+            //).ConfigureAwait(false);
+
+            await _userActionLogQueuePublisher.PublishAsync(
+             UserActionTypeEnum.Updated,
                ResourceTypeEnum.User,
                $"User updated with ID: {user.Id}, Email: {user.Email}"
-           ).ConfigureAwait(false);
+       ).ConfigureAwait(false);
 
             return Results.Ok(Result.Success("User has been update successfully."));
         }

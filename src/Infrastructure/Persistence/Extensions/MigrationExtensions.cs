@@ -1,11 +1,6 @@
 ﻿using Infrastructure.Persistence.Data.Seeding;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Extensions;
 
@@ -19,9 +14,9 @@ public static class MigrationExtensions
         try
         {
             var dbcontext = scopedProvider.GetRequiredService<ApplicationDbContext>();
-            //await dbcontext.Database.EnsureCreatedAsync();
-            if (dbcontext.Database.IsSqlServer())
+            if (dbcontext.Database.IsSqlServer() && dbcontext.Database.GetPendingMigrations().Any())
             {
+
                 await dbcontext.Database.EnsureCreatedAsync();
             }
             await DbContextSeed.InitializeDatabaseAsync(dbcontext, app);

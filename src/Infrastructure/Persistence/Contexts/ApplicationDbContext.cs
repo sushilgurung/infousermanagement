@@ -10,9 +10,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         _currentUserService = currentUserService;
     }
 
-    // Used 'new' keyword to explicitly hide the inherited member
     public DbSet<User> UsersManagement { get; set; }
     public DbSet<UserActionLog> UserActionLogs { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {

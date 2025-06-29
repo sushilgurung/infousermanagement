@@ -1,13 +1,11 @@
-using Application.Features.Authentication.Commands.Login;
-using Application.Features.User.Commands.CreateUser;
-using Application.Interfaces.Services;
-using Domain.Common;
-using Domain.Enum;
-using FluentValidation;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Application.Features.Authentication.Commands.Login;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
+using Domain.Common;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Features.Authentication.Command.Login;
 
@@ -26,13 +24,17 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, IResult>
 
 
     private readonly IUserActionLogService _userActionLogService;
+
+
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
     public LoginCommandHandler(
         ILogger<LoginCommandHandler> logger,
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
         SignInManager<ApplicationUser> signInManager,
-        IUserActionLogService userActionLogService
+        IUserActionLogService userActionLogService,
+         IRefreshTokenRepository refreshTokenRepository
         )
     {
         this._logger = logger;
@@ -41,6 +43,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, IResult>
         this._roleManager = roleManager;
         this._signInManager = signInManager;
         this._userActionLogService = userActionLogService;
+        this._refreshTokenRepository = refreshTokenRepository;
     }
 
     public async Task<IResult> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -87,14 +90,25 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, IResult>
             .Union(roleClaims);
 
             var token = _tokenService.GenerateToken(claims.ToList());
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            await _refreshTokenRepository.AddAsync(new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow
+            });
+            _logger.LogInformation("Refresh token generated for user {UserName}.", user.UserName);
+            await _refreshTokenRepository.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             LoginCommandDto loginCommandDto = new LoginCommandDto
             {
                 UserName = user.UserName,
                 Token = token,
-                Roles = roles.ToArray()
+                Roles = roles.ToArray(),
+                RefreshToken = refreshToken
             };
 
+            _logger.LogInformation("User {UserName} has been logged in successfully.", user.UserName);
             return Results.Ok(Result.Success<LoginCommandDto>(data: loginCommandDto, message: "User has been login successfully."));
         }
         catch (Exception ex)

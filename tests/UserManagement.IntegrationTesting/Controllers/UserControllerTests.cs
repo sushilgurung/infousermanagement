@@ -85,7 +85,11 @@ namespace UserManagement.IntegrationTesting.Controllers
             int userId = 1;
             var updateCommand = new UpdateUserCommand
             {
-                Email = "updatedemail@example.com"
+                ForeName = "Edit_ForeName",
+                SurName = "Edit_SurName",
+                Email = "Edited@yopmail.com",
+                DateOfBirth = new DateOnly(1990, 1, 1),
+                IsActive = false
             };
 
             // Act

@@ -4,9 +4,6 @@ using BlazorClient.Services.UserActionLog;
 using BlazorClient.Services.UserService;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
-
 
 namespace BlazorClient
 {
@@ -24,6 +21,7 @@ namespace BlazorClient
             })
             .AddHttpMessageHandler<AuthHeaderHandler>()
             .AddHttpMessageHandler<UnauthorizedRedirectHandler>();
+            //.AddHttpMessageHandler<AuthMessageHandler>();
 
             services.AddHttpClient<IUserService, UserService>(client =>
             {
@@ -31,6 +29,7 @@ namespace BlazorClient
             })
             .AddHttpMessageHandler<AuthHeaderHandler>()
             .AddHttpMessageHandler<UnauthorizedRedirectHandler>();
+            //.AddHttpMessageHandler<AuthMessageHandler>();
 
 
             services.AddHttpClient<IUserActionLogService, UserActionLogService>(client =>
@@ -39,17 +38,15 @@ namespace BlazorClient
             })
             .AddHttpMessageHandler<AuthHeaderHandler>()
             .AddHttpMessageHandler<UnauthorizedRedirectHandler>();
+            //.AddHttpMessageHandler<AuthMessageHandler>();
 
+            services.AddTransient<AuthHeaderHandler>();
+            services.AddTransient<AuthMessageHandler>();
             services.AddCascadingAuthenticationState();
             services.AddScoped<AuthenticationStateProvider, AuthService>();
             services.AddBlazoredLocalStorage();
-            services.AddTransient<AuthHeaderHandler>();
 
-            //builder.Services.AddTransient<CustomAuthMessageHandler>();
-            //builder.Services.AddHttpClient("AuthAPI", client =>
-            //{
-            //    client.BaseAddress = new Uri("https://yourapi.com/");
-            //}).AddHttpMessageHandler<CustomAuthMessageHandler>();
+             
         }
     }
 }

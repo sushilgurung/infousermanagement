@@ -1,6 +1,9 @@
+using System.Text.Json;
+using Application.Interfaces.QueueServices;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Common;
+using Domain.Entities;
 using Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,16 +16,15 @@ public class GetUserManagementQueryHandler : IRequestHandler<GetUserQuery, IResu
 {
     private readonly ILogger<GetUserManagementQueryHandler> _logger;
     private readonly IUserRepository _userManagementRepository;
-    private readonly IUserActionLogService _userActionLogService;
-
+    private readonly IUserActionLogQueuePublisher _userActionLogQueuePublisher;
     public GetUserManagementQueryHandler(
         ILogger<GetUserManagementQueryHandler> logger,
         IUserRepository userManagementRepository,
-        IUserActionLogService userActionLogService)
+        IUserActionLogQueuePublisher userActionLogQueuePublisher)
     {
         _logger = logger;
         _userManagementRepository = userManagementRepository;
-        _userActionLogService = userActionLogService;
+        _userActionLogQueuePublisher = userActionLogQueuePublisher;
     }
     public async Task<IResult> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
@@ -48,12 +50,15 @@ public class GetUserManagementQueryHandler : IRequestHandler<GetUserQuery, IResu
             .ToListAsync(cancellationToken);
 
             PaginatedList<GetUserDto> pagination = PaginatedList<GetUserDto>.Create(items, request.PageSize, request.PageNumber, totalCount);
-
             var result = Result.Success(pagination, "user retrive successfully.");
-            await _userActionLogService.LogUserActionAsync(
-              UserActionTypeEnum.Viewed,
-              ResourceTypeEnum.User,
-              $"Retrieved user list, page {request.PageNumber}, page size {request.PageSize}").ConfigureAwait(false);
+
+            await _userActionLogQueuePublisher.PublishAsync(
+              action: UserActionTypeEnum.Viewed,
+              resourceType: ResourceTypeEnum.User,
+             $"Retrieved user list, page {request.PageNumber}, page size {request.PageSize}").ConfigureAwait(false);
+             
+
+
             return Results.Ok(result);
         }
         catch (Exception ex)

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Features.Authentication.Commands.Login
+﻿namespace Application.Features.Authentication.Commands.Login
 {
     public class LoginCommandDto
     {
@@ -12,5 +6,6 @@ namespace Application.Features.Authentication.Commands.Login
         public string UserName { get; set; }
         public string Token { get; set; }
         public string[] Roles { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

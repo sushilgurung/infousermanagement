@@ -1,9 +1,9 @@
+using System.Text.Json;
 using Application.Features.User.Command.UpdateUser;
+using Application.Interfaces.QueueServices;
 using Application.Interfaces.Repositories;
-using Application.Interfaces.Services;
 using Domain.Common;
 using Domain.Enum;
-using System.Text.Json;
 
 namespace Application.Features.User.Command.DeleteUser;
 
@@ -17,16 +17,16 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, IResu
 {
     private readonly ILogger<UpdateUserCommandHandler> _logger;
     private readonly IUserRepository _userRepository;
-    private readonly IUserActionLogService _userActionLogService;
+    private readonly IUserActionLogQueuePublisher _userActionLogQueuePublisher;
     public DeleteUserCommandHandler(
         ILogger<UpdateUserCommandHandler> logger,
         IUserRepository userRepository,
-        IUserActionLogService userActionLogService
+        IUserActionLogQueuePublisher userActionLogQueuePublisher
         )
     {
         _logger = logger;
         _userRepository = userRepository;
-        _userActionLogService = userActionLogService;
+        _userActionLogQueuePublisher = userActionLogQueuePublisher;
     }
 
     public async Task<IResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
@@ -44,11 +44,11 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, IResu
             await _userRepository.RemoveAsync(user);
             await _userRepository.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            await _userActionLogService.LogUserActionAsync(
-               UserActionTypeEnum.Deleted,
-               ResourceTypeEnum.User,
-               $"User deleted with ID: {user.Id}, Users deleted: {JsonSerializer.Serialize(user)}"
-           ).ConfigureAwait(false);
+            await _userActionLogQueuePublisher.PublishAsync(
+            action: UserActionTypeEnum.Viewed,
+            resourceType: ResourceTypeEnum.User,
+              $"User deleted with ID: {user.Id}, Users deleted: {JsonSerializer.Serialize(user)}"
+            ).ConfigureAwait(false);
 
             return Results.Ok(Result.Success("User has been deleted successfully."));
         }
