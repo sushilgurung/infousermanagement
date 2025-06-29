@@ -14,3 +14,5 @@
 /tests/UserManagement.Data.Tests/obj
 /tests/UserManagement.IntegrationTesting/obj
 /tests/UserManagement.IntegrationTesting/bin
+/src/WebAPI/bin
+/src/WebAPI/obj
