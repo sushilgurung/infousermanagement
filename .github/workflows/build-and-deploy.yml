@@ -26,29 +26,29 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      # - name: Restore dependencies WebAPI
-      #   run: dotnet restore src/WebAPI/WebAPI.csproj
+      - name: Restore dependencies WebAPI
+        run: dotnet restore src/WebAPI/WebAPI.csproj
 
       - name: Restore dependencies Blazor WASM
         run: dotnet restore src/BlazorClient/BlazorClient.csproj
 
-      # - name: Build solution WebAPI
-      #   run: dotnet build src/WebAPI/WebAPI.csproj --configuration Release --no-restore
+      - name: Build solution WebAPI
+        run: dotnet build src/WebAPI/WebAPI.csproj --configuration Release --no-restore
 
       - name: Build solution Blazor WASM
         run: dotnet build src/BlazorClient/BlazorClient.csproj --configuration Release --no-restore
 
-      # - name: Publish WebAPI
-      #   run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ./publish/blazor
+      - name: Publish WebAPI
+        run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ./publish/blazor
       
       - name: Publish Blazor WASM
         run: dotnet publish src/BlazorClient/BlazorClient.csproj -c Release -o ${{ env.BLAZOR_OUTPUT }}
 
-      # - name: Upload WebAPI artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: webapi-artifact
-      #     path: ./artifacts/webapi
+      - name: Upload WebAPI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapi-artifact
+          path: ./artifacts/webapi
 
       - name: Upload Blazor WASM artifact
         uses: actions/upload-artifact@v4
@@ -62,18 +62,18 @@ jobs:
     needs: build
 
     steps:
-    #   - name: Download WebAPI artifact
-    #     uses: actions/download-artifact@v4
-    #     with:
-    #       name: webapi-artifact
-    #       path: ./webapi
+      - name: Download WebAPI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webapi-artifact
+          path: ./webapi
 
-      # - name: Deploy WebAPI to Azure
-      #   uses: azure/webapps-deploy@v2
-      #   with:
-      #     app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-      #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-      #     package: ./webapi
+      - name: Deploy WebAPI to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./webapi
 
       - name: Download Blazor WASM artifact
         uses: actions/download-artifact@v4
