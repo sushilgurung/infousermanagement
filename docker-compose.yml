@@ -40,14 +40,10 @@ services:
     image: ${DOCKER_REGISTRY-}webapp
     container_name: webapp
     build:
-      context: .
-      dockerfile: src/BlazorClient/Dockerfile
+      context: ./src/BlazorClient
+      dockerfile: Dockerfile
     ports:
-      - "5001:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - webapi
+      - "8085:80"
  
 volumes:
   sqlserverdata:

@@ -87,7 +87,12 @@
 
 
 @code {
-    private LoginModel loginModel = new();
+    private LoginModel loginModel = new()
+    {
+        UserName = "SuperUser",
+        Password = "SuperUser@123"
+    };
+
     private string? error;
     private IDictionary<string, string[]>? validationErrors;
     private bool isLoading = false;
@@ -119,7 +124,7 @@
             if (result.IsSuccess)
             {
                 await AuthService.NotifyUserAuthenticationAsync();
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/", forceLoad: true);
             }
             else if (result.Errors != null)
             {

@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @Body
 
 <style>
@@ -168,5 +168,18 @@
     }
 </style>
 @code {
+    protected override void OnInitialized()
+    {
+        AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+    }
 
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    }
 }

@@ -1,7 +1,118 @@
 ﻿@page "/"
 
 <PageTitle>Home</PageTitle>
+<h1>Info Home Technical Challenge - User Management</h1>
 
-<h1>Hello, world!</h1>
+<div class="credentials">
+    <h2>Login Credentials</h2>
+    <p><span class="label">Username:</span> SuperUser</p>
+    <p><span class="label">Password:</span> SuperUser@123</p>
+</div>
 
-Welcome to your new app.
+<p>
+    This project is an updated and extended version of the original Inflosoftware TechTest, now migrated from <strong>.NET 7</strong> to <strong>.NET 9</strong>, using <strong>SQL Server 2022</strong> and a <strong>Clean Architecture</strong> pattern. It allows for user CRUD operations with enhanced logging, validation, and scalability support.
+</p>
+
+<h2>1. Filters Section (Standard)</h2>
+<p class="section-description">
+    Original Requirement: The users page should include three buttons below the user list to filter users by their active status:
+</p>
+<ul>
+    <li>Show All (already implemented)</li>
+    <li>Active Only (show users with IsActive = true)</li>
+    <li>Non Active (show users with IsActive = false)</li>
+</ul>
+<p><strong>What I implemented:</strong></p>
+<ul>
+    <li>Replaced the three separate buttons with a single dropdown filter control for a cleaner and more user-friendly interface.</li>
+    <li>The dropdown includes options: Show All, Active Only, and Non Active.</li>
+    <li>Selecting an option filters the user list dynamically based on the IsActive property.</li>
+    <li>Added pagination to the user list to improve usability and performance when displaying large numbers of users.</li>
+    <li>All filtering and pagination logic is performed in the Blazor WebAssembly frontend, ensuring a responsive user experience.</li>
+</ul>
+
+<h2>2. User Model Properties (Standard)</h2>
+<p class="section-description">Original Requirement:</p>
+<p>Add a new property to the User class called <code>DateOfBirth</code> which should be used and displayed in relevant sections of the app.</p>
+<p><strong>What I implemented:</strong></p>
+<ul>
+    <li>Added the <code>DateOfBirth</code> property to the User entity/model.</li>
+    <li>Updated the Blazor UI to support adding, editing, viewing, and listing users with their <code>DateOfBirth</code>.</li>
+    <li>Ensured <code>DateOfBirth</code> is displayed appropriately on the user list and detail pages with proper formatting.</li>
+    <li>Added validation for <code>DateOfBirth</code> where necessary (e.g., required or valid date).</li>
+</ul>
+
+<h2>3. Actions Section (Standard)</h2>
+<p class="section-description">
+    Original Requirement: Create the code and UI flows for the following user actions with appropriate data validation communicated to the end user:
+</p>
+<ul>
+    <li>Add – Screen to create a new user and return to the list</li>
+    <li>View – Screen to display user details</li>
+    <li>Edit – Screen to modify an existing user</li>
+    <li>Delete – Screen to remove a user from the list</li>
+</ul>
+<p><strong>What I implemented:</strong></p>
+<ul>
+    <li>Developed full CRUD operations (Create, Read, Update, Delete) for users.</li>
+    <li>Implemented client-side validation in Blazor for immediate feedback.</li>
+    <li>Added server-side validation to ensure data integrity and security.</li>
+    <li>Provided clear validation messages and UI feedback on all relevant screens.</li>
+    <li>Ensured smooth navigation flows between list and detail/edit pages.</li>
+</ul>
+
+<h2>4. Data Logging (Advanced)</h2>
+<p class="section-description">
+    Original Requirement: Extend the system to capture log information about primary actions performed on each user.
+</p>
+<ul>
+    <li>The user View screen should display a list of all actions performed against that user.</li>
+    <li>A new Logs page should list all log entries across the application.</li>
+    <li>From the Logs page, users should be able to click on entries to view detailed information.</li>
+    <li>The Logs page should be designed to provide a good user experience even with many entries.</li>
+</ul>
+<p><strong>What I implemented:</strong></p>
+<ul>
+    <li>Implemented user action logging that records each primary user action (Add, Edit, Delete, View) into the database.</li>
+    <li>Created a dedicated Logs page to display a paginated and searchable list of all user action logs across the system.</li>
+    <li>On the Logs page, users can click any log entry to view detailed information.</li>
+    <li>Integrated the user action logs display on individual user View screens.</li>
+    <li>Added pagination to efficiently handle large volumes of log data, ensuring fast load times and responsive UI.</li>
+</ul>
+
+<h2>5. Extend the Application (Expert)</h2>
+<p class="section-description">Original Requirement: Make a significant architectural improvement to enhance maintainability, scalability, or testability. Suggested ideas include:</p>
+<ul>
+    <li>Re-implement the UI using a client-side framework connected to an API (Blazor preferred)</li>
+    <li>Support asynchronous operations in the data access layer</li>
+    <li>Implement authentication and login based on stored users</li>
+    <li>Implement bundling of static assets</li>
+    <li>Use a real database with schema migrations</li>
+</ul>
+<p><strong>What I implemented:</strong></p>
+<ul>
+    <li>Rebuilt the UI using Blazor WebAssembly, providing a modern, responsive single-page application experience.</li>
+    <li>Developed backend endpoints using both ASP.NET Core REST API Controllers and Minimal APIs for lightweight, flexible routing.</li>
+    <li>Employed SQL Server 2022 as the primary database, leveraging Entity Framework Core (Code-First) for data access and schema migrations.</li>
+    <li>Implemented the Repository Pattern to abstract data access and improve testability and maintainability.</li>
+    <li>Added asynchronous support in all data access operations to improve scalability and responsiveness.</li>
+    <li>Built a login page with full authentication and authorisation flows using JWT Bearer tokens, securing API endpoints and Blazor routes.</li>
+    <li>Applied authorisation policies to protect sensitive data and actions based on user roles or claims.</li>
+</ul>
+
+<h2>6. Future-Proof the Application (Platform)</h2>
+<p class="section-description">Original Requirement: Add additional architectural layers to ensure scalability for many users and developers. Examples include:</p>
+<ul>
+    <li>CI pipelines for automated testing and build</li>
+    <li>CD pipelines for automated deployment to the cloud</li>
+    <li>Infrastructure as Code (IaC) for environment provisioning</li>
+    <li>Message bus or background workers for long-running operations</li>
+</ul>
+<p><strong>What I implemented:</strong></p>
+<ul>
+    <li>Adopted Test-Driven Development (TDD) to ensure code quality and maintainability.</li>
+    <li>Created comprehensive unit tests, integration tests, and Blazor client-side component tests (using bunit).</li>
+    <li>Built and configured CI/CD pipelines using GitHub Actions to automate building, testing, and deploying the application.</li>
+    <li>Hosted backend API on Azure App Service, frontend Blazor WebAssembly on Azure Static Web Apps, and database on Azure SQL Server.</li>
+    <li>Integrated Azure Service Bus Queue to asynchronously save user logs, improving scalability and reliability.</li>
+</ul>
