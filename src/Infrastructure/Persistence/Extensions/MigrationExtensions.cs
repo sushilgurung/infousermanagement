@@ -14,9 +14,8 @@ public static class MigrationExtensions
         try
         {
             var dbcontext = scopedProvider.GetRequiredService<ApplicationDbContext>();
-            if (dbcontext.Database.IsSqlServer() && dbcontext.Database.GetPendingMigrations().Any())
+            if (dbcontext.Database.IsSqlServer())
             {
-
                 await dbcontext.Database.EnsureCreatedAsync();
             }
             await DbContextSeed.InitializeDatabaseAsync(dbcontext, app);

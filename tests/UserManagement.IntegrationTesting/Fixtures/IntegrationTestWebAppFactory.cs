@@ -62,6 +62,19 @@ namespace UserManagement.IntegrationTesting.Fixtures
             try
             {
                 await _mssqlContainer.StartAsync();
+                using (var scope = Services.CreateScope())
+                {
+                    var scopedServices = scope.ServiceProvider;
+                    var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                    if (dbContext.Database.IsSqlServer())
+                    {
+                        if (dbContext.Database.GetPendingMigrations().Any())
+                        {
+                            await dbContext.Database.EnsureCreatedAsync();
+                        }
+                        await TestDataSeeder.SeedTestUserAsync(scopedServices);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -76,7 +89,7 @@ namespace UserManagement.IntegrationTesting.Fixtures
         {
             var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
             var ConnectionString = $"Server=localhost,{port};Database={DatabaseName};User Id={Username};Password={Password};TrustServerCertificate=true;";
-            builder.ConfigureTestServices(async services =>
+            builder.ConfigureTestServices(services =>
             {
 
                 var descriptor = services
@@ -92,22 +105,7 @@ namespace UserManagement.IntegrationTesting.Fixtures
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
-                var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbcontext.Database.Migrate();
-
-                if (dbcontext.Database.IsSqlServer())
-                {
-                    await dbcontext.Database.EnsureCreatedAsync();
-                }
-
-
-                //services.RemoveAll(typeof(ICurrentUserService));
-                //services.AddSingleton(CurrentUserServiceMock.Object);
-
-
-                await TestDataSeeder.SeedTestUserAsync(sp);
-                //services.AddAuthentication("Test")
-                //   .AddScheme<AuthenticationSchemeOptions, FakeJwtAuthHandler>("Test", options => { });
+               
 
                 builder.Configure(app =>
                 {

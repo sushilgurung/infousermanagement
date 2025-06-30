@@ -27,7 +27,6 @@ namespace UserManagement.IntegrationTesting.Controllers
         {
             _factory = factory;
             _client = factory.CreateClient();
-            // _client =  _factory.CreateClientWithJwtAsync().Result;
         }
 
 

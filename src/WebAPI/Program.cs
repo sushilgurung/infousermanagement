@@ -25,7 +25,10 @@ try
     await app.ApplyMigrationsAsync();
 
     // Configure the HTTP request pipeline.
-  
+    if (!app.Environment.IsDevelopment())
+    {
+
+    }
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -34,11 +37,8 @@ try
         c.RoutePrefix = string.Empty;
     });
 
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseHttpsRedirection();
-    }
   
+    app.UseHttpsRedirection();
     app.UseCors("ConfiguredCorsPolicy");
     app.MapControllers();
     app.UseAuthentication();

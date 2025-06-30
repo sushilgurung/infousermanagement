@@ -31,8 +31,17 @@ jobs:
       - name: Restore dependencies Blazor WASM
         run: dotnet restore src/BlazorClient/BlazorClient.csproj
 
-      - name: Restore Tests
+      
+
+      - name: Restore Unit Tests
         run: dotnet restore tests/UserManagement.UnitTests/UserManagement.UnitTests.csproj
+
+      - name: Restore IntegrationTesting  Tests
+        run: dotnet restore tests/UserManagement.IntegrationTesting/UserManagement.IntegrationTesting.csproj 
+
+
+
+
 
       - name: Build solution WebAPI
         run: dotnet build src/WebAPI/WebAPI.csproj --configuration Release --no-restore
@@ -40,11 +49,21 @@ jobs:
       - name: Build solution Blazor WASM
         run: dotnet build src/BlazorClient/BlazorClient.csproj --configuration Release --no-restore
         
-      - name: Build Tests
+
+
+      - name: Build Unit Tests
         run: dotnet build tests/UserManagement.UnitTests/UserManagement.UnitTests.csproj --configuration Release --no-restore
 
       - name: Run Unit Tests
         run: dotnet test tests/UserManagement.UnitTests/UserManagement.UnitTests.csproj --configuration Release --no-restore --no-build
+
+
+      - name: Build IntegrationTesting Tests
+        run: dotnet test tests/UserManagement.IntegrationTesting/UserManagement.IntegrationTesting.csproj --configuration Release --no-restore --no-build
+
+      - name: Run IntegrationTesting Tests
+        run: dotnet test tests/UserManagement.IntegrationTesting/UserManagement.IntegrationTesting.csproj --configuration Release --no-restore --no-build
+
 
       - name: Publish WebAPI
         run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ${{ env.WEBAPI_OUTPUT }}
