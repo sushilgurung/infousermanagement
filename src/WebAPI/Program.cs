@@ -39,7 +39,7 @@ try
     });
 
   
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
     app.UseCors("ConfiguredCorsPolicy");
     app.MapControllers();
     app.UseAuthentication();
