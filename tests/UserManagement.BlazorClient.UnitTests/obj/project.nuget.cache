@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "scg2mUpUSmo=",
+  "dgSpecHash": "OMaqd0o4Ddg=",
   "success": true,
-  "projectFilePath": "D:\\Project\\Inflo\\InfoTechTest\\infousermanagement\\UserManagement.BlazorClient.UnitTests\\UserManagement.BlazorClient.UnitTests.csproj",
+  "projectFilePath": "D:\\Project\\Inflo\\InfoTechTest\\infousermanagement\\tests\\UserManagement.BlazorClient.UnitTests\\UserManagement.BlazorClient.UnitTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gurun\\.nuget\\packages\\anglesharp\\1.2.0\\anglesharp.1.2.0.nupkg.sha512",
     "C:\\Users\\gurun\\.nuget\\packages\\anglesharp.css\\1.0.0-beta.154\\anglesharp.css.1.0.0-beta.154.nupkg.sha512",
