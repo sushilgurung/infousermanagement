@@ -16,3 +16,7 @@
 /tests/UserManagement.IntegrationTesting/bin
 /src/WebAPI/bin
 /src/WebAPI/obj
+/tests/UserManagement.BlazorClient.UnitTests/bin
+/tests/UserManagement.BlazorClient.UnitTests/obj
+/tests/UserManagement.UnitTests/bin
+/tests/UserManagement.UnitTests/obj
