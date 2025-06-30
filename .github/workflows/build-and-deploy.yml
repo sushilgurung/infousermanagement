@@ -31,11 +31,20 @@ jobs:
       - name: Restore dependencies Blazor WASM
         run: dotnet restore src/BlazorClient/BlazorClient.csproj
 
+      - name: Restore Tests
+        run: dotnet restore src/tests/UserManagement.UnitTests/UserManagement.UnitTests.csproj
+
       - name: Build solution WebAPI
         run: dotnet build src/WebAPI/WebAPI.csproj --configuration Release --no-restore
 
       - name: Build solution Blazor WASM
         run: dotnet build src/BlazorClient/BlazorClient.csproj --configuration Release --no-restore
+        
+      - name: Build Tests
+        run: dotnet build src/tests/UserManagement.UnitTests/UserManagement.UnitTests.csproj --configuration Release --no-restore
+
+      - name: Run Unit Tests
+        run: dotnet test src/tests/UserManagement.UnitTests/UserManagement.UnitTests.csproj --configuration Release --no-restore --no-build
 
       - name: Publish WebAPI
         run: dotnet publish src/WebAPI/WebAPI.csproj -c Release -o ${{ env.WEBAPI_OUTPUT }}
