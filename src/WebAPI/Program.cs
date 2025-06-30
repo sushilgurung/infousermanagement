@@ -44,7 +44,7 @@ try
     app.UseAuthorization();
     app.MapCarter();
     Log.Information("Logger run up to here.");
-    app.UseAzureServiceBusConsumer();
+    //app.UseAzureServiceBusConsumer();
     app.Run();
 }
 catch (Exception ex)
