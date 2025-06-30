@@ -37,7 +37,7 @@ try
         c.SwaggerEndpoint("/openapi/v1.json", "User Management API v1");
         c.RoutePrefix = string.Empty;
     });
-    //app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
     app.UseCors("ConfiguredCorsPolicy");
     app.MapControllers();
     app.UseAuthentication();
