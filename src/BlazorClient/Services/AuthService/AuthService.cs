@@ -52,8 +52,23 @@ public class AuthService : AuthenticationStateProvider, IAuthService
     {
         var payload = jwt.Split('.')[1];
         var jsonBytes = Convert.FromBase64String(PadBase64(payload));
-        var claims = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-        return claims.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+        var claimsDict = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        var claims = claimsDict.Select(kvp =>
+        {
+            string claimType = kvp.Key switch
+            {
+                "unique_name" => ClaimTypes.Name,
+                "UserName" => ClaimTypes.Name,
+                "roles" => ClaimTypes.Role,
+                "role" => ClaimTypes.Role,
+                "nameid" => ClaimTypes.NameIdentifier,
+                _ => kvp.Key
+            };
+
+            return new Claim(claimType, kvp.Value.ToString());
+        });
+
+        return claims;
     }
     private string PadBase64(string base64) =>
       base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');

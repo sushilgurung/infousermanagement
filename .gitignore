@@ -20,3 +20,4 @@
 /tests/UserManagement.BlazorClient.UnitTests/obj
 /tests/UserManagement.UnitTests/bin
 /tests/UserManagement.UnitTests/obj
+/bin

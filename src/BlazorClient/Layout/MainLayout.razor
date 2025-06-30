@@ -4,6 +4,7 @@
 @inject IAuthService AuthService
 @using BlazorBootstrap
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -13,8 +14,8 @@
         <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
-                    <p>Hello</p>
-                    <p><button class="btn btn-primary" @onclick="() => HandleLogout()">Log out</button></p>
+                    <p>Hello @context.User.Identity?.Name! </p>
+                    <p><button class="btn btn-primary ms-3" @onclick="() => HandleLogout()">Log out</button></p>
                 </Authorized>
                 <NotAuthorized>
                     <a class="btn btn-primary" href="login">Login</a>
@@ -32,20 +33,6 @@
 <Toasts class="p-3" AutoHide="true" Delay="6000" Placement="ToastsPlacement.TopRight" />
 
 @code {
-    protected override void OnInitialized()
-    {
-        AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
-    }
-
-    private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
-    }
     private async Task HandleLogout()
     {
         await AuthService.LogoutAsync();

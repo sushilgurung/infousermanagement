@@ -32,7 +32,8 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=UserManagement;User=sa;Password=P@ssword@123;TrustServerCertificate=True;    
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=UserManagement;User=sa;Password=P@ssword@123;TrustServerCertificate=True; 
+      - Cors__AllowedOrigins__0=http://localhost:5000
     depends_on:
       - sqlserver
 

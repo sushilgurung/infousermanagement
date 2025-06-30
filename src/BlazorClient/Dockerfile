@@ -1,20 +1,23 @@
-# Stage 1: Build the Blazor WebAssembly app=
+# Stage 1: Build the Blazor WebAssembly app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /frontend 
-
-COPY BlazorClient.csproj ./
+WORKDIR /src
+# Copy project files
+COPY . . 
+# Restore dependencies (optional, improves build caching)
 RUN dotnet restore
+# Publish the Blazor WASM app
+RUN dotnet publish -c Release -o /app/out
 
-COPY . ./
-RUN dotnet publish -c Release -o /frontend/publish
+COPY wwwroot/appsettings.Docker.json /app/out/wwwroot/appsettings.json
 
-
-# Serve the Static file with NGIX
+# Stage 2: Serve with NGINX
 FROM nginx:alpine AS final
-WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
-COPY --from=build /frontend/publish/wwwroot .
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy NGINX configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy published files to NGINX html folder
+COPY --from=build /app/out/wwwroot /usr/share/nginx/html
 
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
