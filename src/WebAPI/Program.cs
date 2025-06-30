@@ -45,7 +45,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapCarter();
-    app.UseAzureServiceBusConsumer();
+    //app.UseAzureServiceBusConsumer();
     app.Run();
 }
 catch (Exception ex)
